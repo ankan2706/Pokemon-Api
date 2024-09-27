@@ -34,10 +34,15 @@ function PokedexList(){
        },[]);
         return(
             <div className="pokemon-list-wrapper">
-                <div>pokemon list</div>
-                {(isLoading)?'Loading......':
-                    pokemonList.map((p) => <Pokemon name={p.name} image={p.image} key={p.id}/>)
-                }
+                <div className="pokemon-wrapper">
+                    {(isLoading)?'Loading......':
+                        pokemonList.map((p) => <Pokemon name={p.name} image={p.image} key={p.id}/>)
+                    }
+                </div>
+                <div className="controls">
+                    <button>Prev</button>
+                    <button>Nest</button>
+                </div>
             </div>
         )
 
