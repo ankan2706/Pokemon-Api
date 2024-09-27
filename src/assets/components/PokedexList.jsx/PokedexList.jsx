@@ -4,13 +4,20 @@ import axios from "axios";
 import './pokemon-list-wrapper.css'
 import Pokemon from "../Pokemon/Pokemon";
 function PokedexList(){
-
+        const [pokedexurl,setPokedexUrl] = useState('https://pokeapi.co/api/v2/pokemon/');
         const [pokemonList, setPokemonList ] = useState([]);
 
         const [isLoading, setIsLoading ] = useState(true);
+        const [nextUrl, setNextUrl ] = useState('');
+        const [prevUrl, setPrevUrl ] = useState('');
         async function DownloadPokemons(){
-            const response = await axios.get('https://pokeapi.co/api/v2/pokemon/');
+            setIsLoading(true);
+            const response = await axios.get(pokedexurl);
             const pokemonResults = response.data.results;           
+            console.log(response);
+            setNextUrl(response.data.next);
+            setPrevUrl(response.data.previous);
+
             const pokemonResultsPormise = pokemonResults.map((pokemon) => axios.get(pokemon.url));
             // console.log(pokemonResultsPormise);
             const pokemonData = await axios.all(pokemonResultsPormise);
@@ -25,13 +32,13 @@ function PokedexList(){
                     type:pokemon.types
                 }
             });
-            console.log(res);
+            // console.log(res);
             setPokemonList(res);
             setIsLoading(false);
         }
        useEffect(() => {
             DownloadPokemons();
-       },[]);
+       },[pokedexurl]);
         return(
             <div className="pokemon-list-wrapper">
                 <div className="pokemon-wrapper">
@@ -40,8 +47,8 @@ function PokedexList(){
                     }
                 </div>
                 <div className="controls">
-                    <button>Prev</button>
-                    <button>Nest</button>
+                    <button disabled={prevUrl == null } onClick={()=> setPokedexUrl(prevUrl)}>Prev</button>
+                    <button disabled={nextUrl == null} onClick={()=> setPokedexUrl(nextUrl)}>Nest</button>
                 </div>
             </div>
         )
